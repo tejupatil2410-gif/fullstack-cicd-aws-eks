@@ -10,8 +10,8 @@ if apikey:
     os.environ['OPENAI_API_KEY'] = apikey
 
 # Display media files
-st.audio("Lofi hiphop.mp3")
-st.image("girl.gif")
+st.audio("assets/Lofi hiphop.mp3")
+#st.image("girl.gif")
 
 st.title(" 🦜️🔗Ask your Homework problem 🧟‍♂️")
 prompt = st.text_input("Type your homework question below", key="homework_prompt_input")
@@ -26,4 +26,4 @@ elif not apikey:
 
 with st.sidebar:
     st.write("About me")
-    st.image("cutie-cat.gif")
+    #st.image("cutie-cat.gif")
