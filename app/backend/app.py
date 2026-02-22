@@ -13,7 +13,7 @@ if apikey:
 st.audio("assets/Lofi hiphop.mp3")
 #st.image("girl.gif")
 
-st.title(" 🦜️🔗Ask your Homework problem 🧟‍♂️")
+st.title(" 🦜️🔗Ask your problem 🧟‍♂️")
 prompt = st.text_input("Type your homework question below", key="homework_prompt_input")
 
 # LLMs
@@ -22,7 +22,7 @@ if apikey and prompt:
     response = llm(prompt)
     st.write(response)
 elif not apikey:
-    st.warning("Please enter your OpenAI API key to proceed.")
+    st.warning("Enter OpenAI API key to proceed.")
 
 with st.sidebar:
     st.write("About me")
