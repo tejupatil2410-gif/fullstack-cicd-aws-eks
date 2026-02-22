@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: streamlit-container
-        image: 713386558285.dkr.ecr.us-east-1.amazonaws.com/streamlit-app:v1
+        image: 713386558285.dkr.ecr.us-east-1.amazonaws.com/streamlit-app:3
         ports:
         - containerPort: 8501
         resources:
