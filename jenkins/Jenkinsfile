@@ -2,13 +2,14 @@ pipeline {
     agent any
 
     environment {
-        AWS_REGION = "us-east-1"
-        ACCOUNT_ID = "713386558285"
-        ECR_REPO = "streamlit-app"
-        IMAGE_TAG = "${BUILD_NUMBER}"
-        ECR_URI = "${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+        AWS_REGION   = "us-east-1"
+        ACCOUNT_ID   = "713386558285"
+        ECR_REPO     = "streamlit-app"
+        IMAGE_TAG    = "${BUILD_NUMBER}"
+        ECR_URI      = "${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
         CLUSTER_NAME = "streamlit-cluster"
         K8S_NAMESPACE = "streamlit-prod"
+        CONTAINER_NAME = "streamlit-container"
     }
 
     options {
@@ -73,7 +74,7 @@ pipeline {
                 aws eks update-kubeconfig --region ${AWS_REGION} --name ${CLUSTER_NAME}
 
                 kubectl set image deployment/streamlit-deployment \
-                streamlit=${ECR_URI}/${ECR_REPO}:${IMAGE_TAG} \
+                ${CONTAINER_NAME}=${ECR_URI}/${ECR_REPO}:${IMAGE_TAG} \
                 -n ${K8S_NAMESPACE}
 
                 kubectl rollout status deployment/streamlit-deployment \
