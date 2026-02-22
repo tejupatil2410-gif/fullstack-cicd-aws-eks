@@ -7,6 +7,8 @@ pipeline {
         ECR_REPO = "streamlit-app"
         IMAGE_TAG = "${BUILD_NUMBER}"
         ECR_URI = "${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+        CLUSTER_NAME = "streamlit-cluster"
+        K8S_NAMESPACE = "streamlit-prod"
     }
 
     options {
@@ -18,7 +20,9 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 echo "Cloning repository..."
-                git branch: 'main', url: 'https://github.com/tejupatil2410-gif/fullstack-cicd-aws-eks.git'
+                git branch: 'main',
+                    credentialsId: 'github-ssh',
+                    url: 'git@github.com:tejupatil2410-gif/fullstack-cicd-aws-eks.git'
             }
         }
 
@@ -60,14 +64,31 @@ pipeline {
                 """
             }
         }
+
+        stage('Deploy to EKS') {
+            steps {
+                echo "Deploying to Kubernetes..."
+
+                sh """
+                aws eks update-kubeconfig --region ${AWS_REGION} --name ${CLUSTER_NAME}
+
+                kubectl set image deployment/streamlit-deployment \
+                streamlit=${ECR_URI}/${ECR_REPO}:${IMAGE_TAG} \
+                -n ${K8S_NAMESPACE}
+
+                kubectl rollout status deployment/streamlit-deployment \
+                -n ${K8S_NAMESPACE}
+                """
+            }
+        }
     }
 
     post {
         success {
-            echo "✅ CI SUCCESS: Docker image built and pushed to ECR!"
+            echo "✅ CI/CD SUCCESS: Image built, pushed, and deployed!"
         }
         failure {
-            echo "❌ CI FAILED: Check console logs."
+            echo "❌ CI/CD FAILED: Check console logs."
         }
         always {
             echo "Cleaning up local Docker images..."
